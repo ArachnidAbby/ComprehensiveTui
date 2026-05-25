@@ -1,7 +1,7 @@
 [project]
 name = "pytui"
 version = "0.1.0"
-description = "Add your description here"
+description = "A Text UI library similar to QT"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = []

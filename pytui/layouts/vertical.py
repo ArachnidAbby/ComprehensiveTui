@@ -22,7 +22,7 @@ class VerticalLayout(Layout):
         return LayoutSize(
             self.width,
             self.height // len(self.parent.children)
-            + ((self.parent.children.index(child) + 1) % (missing_lines) > 0),
+            + ((self.parent.children.index(child) + 1) % max(missing_lines, 1) > 0),
         )
 
     def draw(self) -> list[str]:

@@ -5,6 +5,7 @@ from pytui.layouts.align import Align
 from pytui.layouts.horizontal import HorizontalLayout
 from pytui.utils.definitions import CYAN, RESET
 from pytui.widgets import Frame, Label
+from pytui.widgets.textboard import TextBoard
 
 
 def main():
@@ -12,6 +13,9 @@ def main():
 
     term_size = os.get_terminal_size()
     resize_event = ResizeEvent(term_size.columns, term_size.lines)
+
+    board = TextBoard(Align.center)
+    board.lines = [str(i) for i in range(35)]
 
     program = Frame(
         [
@@ -35,21 +39,7 @@ def main():
             #     name="Bar",
             # ),
             Label(f"{CYAN}Test2", Align.center, name="6"),
-            Label(f"{CYAN}Test3", Align.center, name="6"),
-            Frame(
-                [
-                    Label(f"{CYAN}foo", Align.center, name="1"),
-                    Label(f"{CYAN}bar", Align.center, name="2"),
-                    Label(f"{CYAN}baz", Align.center, name="3"),
-                ],
-                HorizontalLayout(),
-                name="Bar",
-            ),
-            Label(f"{CYAN}Test4", Align.center, name="6"),
-            Label(f"{CYAN}Test4", Align.center, name="6"),
-            Label(f"{CYAN}Test4", Align.center, name="6"),
-            Label(f"{CYAN}Test4", Align.center, name="6"),
-            Label(f"{CYAN}Test4", Align.center, name="6"),
+            board,
         ],
         VerticalLayout(),
         name="program",
@@ -57,7 +47,6 @@ def main():
     program.handle_event(resize_event)
 
     print(program.children[0].width, program.children[0].height)
-
     program.draw()
     print(len(program.view.lines), term_size.lines)
     print("-" * term_size.columns)
