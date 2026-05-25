@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import NamedTuple
 import typing
 
-from pytui.events.event import ResizeEvent
+from comprehensivetui.events.event import ResizeEvent
 
 if typing.TYPE_CHECKING:
     from ..widgets.widget import Widget

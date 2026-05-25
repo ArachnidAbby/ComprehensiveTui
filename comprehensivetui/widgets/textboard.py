@@ -1,10 +1,10 @@
 from enum import IntEnum, auto
 
-from pytui.events.event import Event, ResizeEvent
-from pytui.layouts.align import Align
-from pytui.utils.definitions import CYAN
-from pytui.utils.strutils import break_and_wrap_text, visible_len
-from pytui.widgets.widget import Widget
+from comprehensivetui.events.event import Event, ResizeEvent
+from comprehensivetui.layouts.align import Align
+from comprehensivetui.utils.definitions import CYAN
+from comprehensivetui.utils.strutils import break_and_wrap_text, visible_len
+from comprehensivetui.widgets.widget import Widget
 
 
 class TextBoard(Widget):

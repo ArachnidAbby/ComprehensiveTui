@@ -1,7 +1,7 @@
 from typing import overload, override
 
-from pytui.utils.definitions import RESET
-from pytui.utils.strutils import normalize_line
+from comprehensivetui.utils.definitions import RESET
+from comprehensivetui.utils.strutils import normalize_line
 
 
 class DrawableView:

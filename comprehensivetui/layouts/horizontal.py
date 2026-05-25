@@ -1,7 +1,7 @@
 import typing
 
-from pytui.events.event import ResizeEvent
-from pytui.layouts.layout import Layout, LayoutSize
+from comprehensivetui.events.event import ResizeEvent
+from comprehensivetui.layouts.layout import Layout, LayoutSize
 
 if typing.TYPE_CHECKING:
     from ..widgets.widget import Widget

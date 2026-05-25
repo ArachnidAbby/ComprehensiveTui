@@ -2,8 +2,8 @@
 
 from abc import ABC, abstractmethod
 
-from pytui.layouts.layout import Layout, LayoutSize
-from pytui.widgets.view import DrawableView
+from comprehensivetui.layouts.layout import Layout, LayoutSize
+from comprehensivetui.widgets.view import DrawableView
 from ..events.event import Event, ResizeEvent
 
 

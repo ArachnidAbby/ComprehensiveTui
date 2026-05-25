@@ -1,6 +1,6 @@
-from pytui.events.event import Event
-from pytui.layouts.layout import Layout
-from pytui.widgets.widget import Widget
+from comprehensivetui.events.event import Event
+from comprehensivetui.layouts.layout import Layout
+from comprehensivetui.widgets.widget import Widget
 
 
 class Frame(Widget):
