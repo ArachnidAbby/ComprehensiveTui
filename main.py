@@ -1,15 +1,15 @@
 import os
-from pytui.events import ResizeEvent
-from pytui.layouts import VerticalLayout
-from pytui.layouts.align import Align
-from pytui.layouts.horizontal import HorizontalLayout
-from pytui.utils.definitions import CYAN, RESET
-from pytui.widgets import Frame, Label
-from pytui.widgets.textboard import TextBoard
+from comprehensivetui.events import ResizeEvent
+from comprehensivetui.layouts import VerticalLayout
+from comprehensivetui.layouts.align import Align
+from comprehensivetui.layouts.horizontal import HorizontalLayout
+from comprehensivetui.utils.definitions import CYAN, RESET
+from comprehensivetui.widgets import Frame, Label
+from comprehensivetui.widgets.textboard import TextBoard
 
 
 def main():
-    print("Hello from pytui!")
+    print("Hello from comprehensivetui!")
 
     term_size = os.get_terminal_size()
     resize_event = ResizeEvent(term_size.columns, term_size.lines)

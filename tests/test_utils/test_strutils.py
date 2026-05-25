@@ -1,7 +1,7 @@
 """Test the strutils module"""
 
-from pytui.utils.definitions import BRIGHT_RED, CYAN, RED, RESET, YELLOW
-from pytui.utils.strutils import (
+from comprehensivetui.utils.definitions import BRIGHT_RED, CYAN, RED, RESET, YELLOW
+from comprehensivetui.utils.strutils import (
     break_and_wrap_text,
     get_visible_index,
     is_ansi_code,

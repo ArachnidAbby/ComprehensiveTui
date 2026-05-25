@@ -1,5 +1,5 @@
 [project]
-name = "pytui"
+name = "comprehensivetui"
 version = "0.1.0"
 description = "A Text UI library similar to QT"
 readme = "README.md"
