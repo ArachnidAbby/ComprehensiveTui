@@ -1,7 +1,7 @@
-from . import utils
-from . import layouts
-from . import events
-from . import widgets
+from comprehensivetui import utils
+from comprehensivetui import layouts
+from comprehensivetui import events
+from comprehensivetui import widgets
 
 # from .utils import *
 # from .widgets import *

@@ -118,7 +118,7 @@ def rgb_to_ansi(
 
 
 if sys.platform == "win32":
-    from .windows import (
+    from comprehensivetui.utils.definitions.windows import (
         BACKSPACE,
         LEFT_ARROW,
         RIGHT_ARROW,
@@ -133,7 +133,7 @@ if sys.platform == "win32":
         has_char,
     )
 else:
-    from .linux import (
+    from comprehensivetui.utils.definitions.linux import (
         BACKSPACE,
         LEFT_ARROW,
         RIGHT_ARROW,
@@ -148,7 +148,7 @@ else:
         has_char,
     )
 
-from .controlcodes import (
+from comprehensivetui.utils.definitions.controlcodes import (
     cursor_up,
     cursor_down,
     cursor_left,
@@ -164,7 +164,7 @@ from .controlcodes import (
     enter_alternative_mode,
     enter_normal_mode,
 )
-from . import controlcodes
+from comprehensivetui.utils.definitions import controlcodes
 
 __all__ = [
     # modules

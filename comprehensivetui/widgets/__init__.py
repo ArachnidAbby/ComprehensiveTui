@@ -1,7 +1,7 @@
-from .label import Label
-from .widget import Widget
-from .frame import Frame
-from .textboard import TextBoard
+from comprehensivetui.widgets.label import Label
+from comprehensivetui.widgets.widget import Widget
+from comprehensivetui.widgets.frame import Frame
+from comprehensivetui.widgets.textboard import TextBoard
 
 from . import view
 
