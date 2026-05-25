@@ -44,7 +44,7 @@ class DrawableView:
 
     def to_flat(self, rows: int, columns: int) -> str:
         """Turns the view into a flat string to be shown on the console"""
-        if rows < len(self.lines):
+        if rows > len(self.lines):
             self.lines += [""] * (rows - len(self.lines) + 1)
         return "\n".join(
             normalize_line(line, columns) + RESET for line in self.lines[:rows]
@@ -52,7 +52,7 @@ class DrawableView:
 
     def to_normalized(self, rows: int, columns: int) -> list[str]:
         """Create a normalized list of lines"""
-        if rows < len(self.lines):
+        if rows > len(self.lines):
             self.lines += [""] * (rows - len(self.lines) + 1)
         return [normalize_line(line, columns) + RESET for line in self.lines[:rows]]
 

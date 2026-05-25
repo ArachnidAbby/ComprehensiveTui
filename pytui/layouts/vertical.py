@@ -18,7 +18,12 @@ class VerticalLayout(Layout):
     def calculate_widget_size(self, child: "Widget"):
         if child is self.parent:
             return LayoutSize(self.width, self.height)
-        return LayoutSize(self.width, self.height // len(self.parent.children))
+        missing_lines = self.height % len(self.parent.children)
+        return LayoutSize(
+            self.width,
+            self.height // len(self.parent.children)
+            + ((self.parent.children.index(child) + 1) % (missing_lines) > 0),
+        )
 
     def draw(self) -> list[str]:
         output = []

@@ -25,7 +25,7 @@ class HorizontalLayout(Layout):
 
         for child in self.parent.children:
             child.draw()
-            frames.append(child.view.to_normalized(self.height, child.width))
+            frames.append(child.view.to_normalized(child.height, child.width))
 
         output = [""] * max(len(frame) for frame in frames)
         for frame in frames:
