@@ -75,6 +75,7 @@ def break_and_wrap_text(text: str, width: int) -> list[str]:
 
 def normalize_line(text: str, width: int) -> str:
     """truncates the text to a specific *visible* size. Adds ` ` characters where needed"""
+    text = text.strip("\n")
     if visible_len(text) <= width:
         return f"{text}{" " * (width-visible_len(text))}"
     text = text[
