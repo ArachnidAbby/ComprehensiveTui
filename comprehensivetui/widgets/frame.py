@@ -8,9 +8,7 @@ class Frame(Widget):
 
     def __init__(self, children: list[Widget], layout: Layout, *, name=""):
         super().__init__(name=name)
-        for child in children:
-            self.add_child(child)
-
+        self.set_children(children)
         self.set_layout(layout)
 
     def handle_event(self, event: Event) -> bool:

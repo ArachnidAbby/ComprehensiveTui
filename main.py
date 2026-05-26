@@ -10,6 +10,8 @@ from comprehensivetui.widgets.textboard import TextBoard
 
 
 class ExampleProgram(Program):
+    __slots__ = ()
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

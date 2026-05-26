@@ -1,32 +1,79 @@
 """A module containing our base widget"""
 
-from abc import ABC, abstractmethod
+from abc import ABC, ABCMeta, abstractmethod
+from types import GenericAlias
 
 from comprehensivetui.layouts.layout import Layout, LayoutSize
 from comprehensivetui.widgets.view import DrawableView
 from ..events.event import Event, ResizeEvent
 
 
-class Widget(ABC):
+class DirtyProperty[T]():
+    """A property that sets something as dirty"""
+
+    __slots__ = "name"
+
+    def __set_name__(self, owner, name: str):
+        self.name = "_dirty_" + name
+
+    def __set__(self, instance: "Widget", value: T):
+        setattr(instance, self.name, value)
+        instance.dirty = True
+
+    def __get__(self, instance: "Widget", owner):
+        return getattr(instance, self.name)
+
+
+type Dirty[T] = T
+"""Uses some magic to automatically set widgets as dirty when this attribute is modified"""
+
+
+class WidgetMeta(ABCMeta):
+    """Metaclass that makes `Dirty[T] work fully"""
+
+    def __new__(cls, clsname, bases, attrs: dict):
+        dirty_props = {
+            name: annot
+            for name, annot in bases[0].__annotations__.items()
+            if isinstance(annot, GenericAlias) and annot.__name__ == Dirty.__name__
+        }
+        for prop in dirty_props.keys():
+            attrs[prop] = DirtyProperty()
+
+        if "__slots__" in attrs.keys():
+            attrs["__slots__"] = (
+                *(
+                    slot
+                    for slot in attrs.get("__slots__", [])
+                    if slot not in dirty_props.keys()
+                ),
+                *("_dirty_" + prop for prop in dirty_props.keys()),
+            )
+
+        x = super().__new__(cls, clsname, bases, attrs)
+        return x
+
+
+class Widget(ABC, metaclass=WidgetMeta):
     """A basic widget. It controls how it draws and its what it does with captured inputs"""
 
     __slots__ = (
         "children",
         "_layout",
         "parent",
-        "__size",
+        "_size",
         "view",
         "visible",
         "_name",
         "dirty",
     )
 
-    children: list["Widget"]
+    children: Dirty[list["Widget"]]
     """Child elements, necessary for passing inputs, events, etc."""
-    _layout: Layout | None
+    _layout: Dirty[Layout | None]
     """The layout of the widget- controls resizing"""
     parent: "Widget | None"
-    __size: LayoutSize
+    _size: Dirty[LayoutSize]
     _name: str
     view: DrawableView
     """The drawn frame for this widget"""
@@ -35,12 +82,11 @@ class Widget(ABC):
 
     def __init__(self, *, name=""):
         self.children = []
-        self.__size = LayoutSize(-1, -1)
+        self._size = LayoutSize(-1, -1)
         self.parent = None
         self._layout = None
         self.view = DrawableView()
         self._name = name
-        self.dirty = True
 
     def set_children(self, children: list["Widget"]):
         for child in children:
@@ -72,11 +118,11 @@ class Widget(ABC):
 
     @property
     def width(self) -> int:
-        return self.__size.width
+        return self._size.width
 
     @property
     def height(self) -> int:
-        return self.__size.height
+        return self._size.height
 
     @abstractmethod
     def handle_event(self, event: Event) -> bool:
@@ -85,8 +131,7 @@ class Widget(ABC):
             case ResizeEvent(_, _):
                 if self._layout is not None:
                     self._layout.handle_resize(event)
-                self.__size = self.get_layout().get_widget_size(self)
-                # self.dirty = True
+                self._size = self.get_layout().get_widget_size(self)
                 return True
         return False
 
@@ -107,4 +152,4 @@ class Widget(ABC):
         return f'<{self.__class__.__name__} "{self._name}">'
 
 
-__all__ = ["Widget"]
+__all__ = ["Widget", "Dirty", "WidgetMeta", "DirtyProperty"]

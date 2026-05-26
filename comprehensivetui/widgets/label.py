@@ -4,14 +4,14 @@ from comprehensivetui.events.event import Event, ResizeEvent
 from comprehensivetui.layouts.align import Align
 from comprehensivetui.utils.definitions import CYAN
 from comprehensivetui.utils.strutils import visible_len
-from comprehensivetui.widgets.widget import Widget
+from comprehensivetui.widgets.widget import Dirty, Widget
 
 
 class Label(Widget):
     __slots__ = "_text", "_text_visible_size", "align"
 
-    _text: str
-    align: Align
+    _text: Dirty[str]
+    align: Dirty[Align]
     _text_visible_size: int
     """Visible length of the text- auto calculated as to be cached"""
 

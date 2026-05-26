@@ -4,7 +4,7 @@ from comprehensivetui.events.event import Event, ResizeEvent
 from comprehensivetui.layouts.align import Align
 from comprehensivetui.utils.definitions import CYAN
 from comprehensivetui.utils.strutils import break_and_wrap_text, visible_len
-from comprehensivetui.widgets.widget import Widget
+from comprehensivetui.widgets.widget import Dirty, Widget
 
 
 class TextBoard(Widget):
@@ -12,11 +12,11 @@ class TextBoard(Widget):
 
     __slots__ = "lines", "draw_lines", "scroll", "align"
 
-    lines: list[str]
+    lines: Dirty[list[str]]
     draw_lines: list[str]
     """broken and wrapped lines"""
-    align: Align
-    scroll: int
+    align: Dirty[Align]
+    scroll: Dirty[int]
     """scroll offset going from -inf to 0"""
 
     def __init__(self, align=Align.left, /, *, name=""):
