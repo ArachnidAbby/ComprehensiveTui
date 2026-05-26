@@ -22,7 +22,7 @@ class ExampleProgram(Program):
             [
                 Frame(
                     [
-                        Label(f"{CYAN}Test1", Align.center, name="1"),
+                        Label(f"{CYAN}Test1\nTest4", Align.center, name="1"),
                         Label(f"{CYAN}Test2", Align.center, name="2"),
                         Label(f"{CYAN}Test3", Align.center, name="3"),
                     ],
