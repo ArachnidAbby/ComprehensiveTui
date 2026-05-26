@@ -11,6 +11,7 @@ from comprehensivetui.utils.definitions import (
     ARROW_COMBINATION_SIZE,
 )
 from comprehensivetui.utils.definitions.controlcodes import (
+    clear_screen,
     disable_cursor,
     enable_cursor,
     enter_alternative_mode,
@@ -49,9 +50,10 @@ class Program(Widget):
         term_size = os.get_terminal_size()
         events: list[Event] = [ResizeEvent(term_size.columns, term_size.lines)]
         try:
-            sys.stdout.write(f"\u001b{self.title}\007")
             sys.stdout.write(set_cursor(0, 0))
             sys.stdout.write(disable_cursor() + enter_alternative_mode())
+            sys.stdout.write(f"\u001b]0;{self.title}\007")
+            sys.stdout.flush()
 
             while self.running:
                 keys = []
@@ -81,6 +83,8 @@ class Program(Widget):
                 sys.stdout.write(self.view.to_flat(self.height, self.width))
                 sys.stdout.flush()
                 time.sleep(1 / self.rate)
+        except KeyboardInterrupt:
+            sys.stdout.write(clear_screen())
         finally:
             sys.stdout.write(enable_cursor() + enter_normal_mode())
             sys.stdout.flush()
