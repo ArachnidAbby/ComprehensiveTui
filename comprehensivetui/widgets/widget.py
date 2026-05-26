@@ -147,6 +147,7 @@ class Widget(ABC, metaclass=WidgetMeta):
             self.view.lines = self._layout.draw()
         else:
             self.draw_buffer()
+        self.dirty = False
 
     def __repr__(self) -> str:
         return f'<{self.__class__.__name__} "{self._name}">'
