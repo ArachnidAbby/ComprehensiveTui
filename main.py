@@ -1,5 +1,7 @@
 import os
+import time
 from comprehensivetui.events import ResizeEvent
+from comprehensivetui.events.event import Event
 from comprehensivetui.layouts import VerticalLayout
 from comprehensivetui.layouts.align import Align
 from comprehensivetui.layouts.horizontal import HorizontalLayout
@@ -10,19 +12,22 @@ from comprehensivetui.widgets.textboard import TextBoard
 
 
 class ExampleProgram(Program):
-    __slots__ = ()
+    __slots__ = ("label", "last_timer", "highest")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         board = TextBoard(Align.center)
         board.lines = [str(i) for i in range(35)]
+        self.label = Label(f"{CYAN}Test1\nTest4", Align.center, name="1")
+        self.last_timer = time.perf_counter()
+        self.highest = 0
 
         self.set_children(
             [
                 Frame(
                     [
-                        Label(f"{CYAN}Test1\nTest4", Align.center, name="1"),
+                        self.label,
                         Label(f"{CYAN}Test2", Align.center, name="2"),
                         Label(f"{CYAN}Test3", Align.center, name="3"),
                     ],
@@ -45,6 +50,14 @@ class ExampleProgram(Program):
         )
 
         self.set_layout(VerticalLayout())
+
+    def on_frame(self):
+        t = time.perf_counter()
+        dif = t - self.last_timer
+        if dif > self.highest:
+            self.label.text = f"perf: {self.highest:f}"
+            self.highest = dif
+        self.last_timer = t
 
 
 def main():

@@ -44,6 +44,8 @@ class Program(Widget):
     def draw_buffer(self):
         """Mutate self.view to draw the widget. Modified in sub-classes"""
 
+    def on_frame(self): ...
+
     def start(self: Self):
         """Entry point for the program."""
         self.running = True
@@ -82,6 +84,7 @@ class Program(Widget):
                 sys.stdout.write(set_cursor(0, 0))
                 sys.stdout.write(self.view.to_flat(self.height, self.width))
                 sys.stdout.flush()
+                self.on_frame()
                 time.sleep(1 / self.rate)
         except KeyboardInterrupt:
             sys.stdout.write(clear_screen())

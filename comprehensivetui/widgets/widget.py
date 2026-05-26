@@ -18,7 +18,7 @@ class DirtyProperty[T]():
 
     def __set__(self, instance: "Widget", value: T):
         setattr(instance, self.name, value)
-        instance.dirty = True
+        instance._dirty = True
 
     def __get__(self, instance: "Widget", owner):
         return getattr(instance, self.name)
@@ -65,7 +65,7 @@ class Widget(ABC, metaclass=WidgetMeta):
         "view",
         "visible",
         "_name",
-        "dirty",
+        "_dirty",
     )
 
     children: Dirty[list["Widget"]]
@@ -77,7 +77,7 @@ class Widget(ABC, metaclass=WidgetMeta):
     _name: str
     view: DrawableView
     """The drawn frame for this widget"""
-    dirty: bool
+    _dirty: bool
     """Whether or not the widget needs to be redrawn."""
 
     def __init__(self, *, name=""):
@@ -87,6 +87,10 @@ class Widget(ABC, metaclass=WidgetMeta):
         self._layout = None
         self.view = DrawableView()
         self._name = name
+
+    @property
+    def dirty(self):
+        return self._dirty or any(child.dirty for child in self.children)
 
     def set_children(self, children: list["Widget"]):
         for child in children:
@@ -143,11 +147,12 @@ class Widget(ABC, metaclass=WidgetMeta):
         """Mutate self.view to draw the widget"""
         if not self.dirty:
             return
+        self.view.reset()
         if self._layout is not None:
             self.view.lines = self._layout.draw()
         else:
             self.draw_buffer()
-        self.dirty = False
+        self._dirty = False
 
     def __repr__(self) -> str:
         return f'<{self.__class__.__name__} "{self._name}">'
