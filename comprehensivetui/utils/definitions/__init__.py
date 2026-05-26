@@ -127,6 +127,7 @@ if sys.platform == "win32":
         PG_UP,
         PG_DOWN,
         ENTER,
+        ARROW_COMBINATION_SIZE,
         arrow_pressed,
         setup_terminal,
         next_char,
@@ -142,6 +143,7 @@ else:
         PG_UP,
         PG_DOWN,
         ENTER,
+        ARROW_COMBINATION_SIZE,
         arrow_pressed,
         setup_terminal,
         next_char,
@@ -225,6 +227,7 @@ __all__ = [
     "PG_UP",
     "PG_DOWN",
     "ENTER",
+    "ARROW_COMBINATION_SIZE",
     ## functions
     "arrow_pressed",
     "setup_terminal",

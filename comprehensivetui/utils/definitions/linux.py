@@ -17,12 +17,14 @@ PG_UP = 53
 PG_DOWN = 54
 ENTER = 10
 
+ARROW_COMBINATION_SIZE = 4
 
-def arrow_pressed(key: int) -> bool:
+
+def arrow_pressed(keys: list[int]) -> bool:
     """Checks if an arrow key is pressed. This is a combination of 4 keys- [27, 91, 91, ARROW_KEY_CODE]"""
-    if key != 27:
+    if len(keys) < 4 or keys[0] != 27:
         return False
-    return next_char() == 91 and next_char() == 91
+    return keys[1] == 91 and keys[2] == 91
 
 
 def _enable_echo(fd, enabled):
@@ -65,6 +67,7 @@ __all__ = [
     "PG_UP",
     "PG_DOWN",
     "ENTER",
+    "ARROW_COMBINATION_SIZE",
     # functions
     "arrow_pressed",
     "setup_terminal",

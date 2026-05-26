@@ -10,7 +10,16 @@ from ..events.event import Event, ResizeEvent
 class Widget(ABC):
     """A basic widget. It controls how it draws and its what it does with captured inputs"""
 
-    __slots__ = "children", "_layout", "parent", "__size", "view", "visible", "_name"
+    __slots__ = (
+        "children",
+        "_layout",
+        "parent",
+        "__size",
+        "view",
+        "visible",
+        "_name",
+        "dirty",
+    )
 
     children: list["Widget"]
     """Child elements, necessary for passing inputs, events, etc."""
@@ -21,6 +30,8 @@ class Widget(ABC):
     _name: str
     view: DrawableView
     """The drawn frame for this widget"""
+    dirty: bool
+    """Whether or not the widget needs to be redrawn."""
 
     def __init__(self, *, name=""):
         self.children = []
@@ -29,6 +40,11 @@ class Widget(ABC):
         self._layout = None
         self.view = DrawableView()
         self._name = name
+        self.dirty = True
+
+    def set_children(self, children: list["Widget"]):
+        for child in children:
+            self.add_child(child)
 
     def add_child(self, child: "Widget"):
         child.parent = self
@@ -70,6 +86,7 @@ class Widget(ABC):
                 if self._layout is not None:
                     self._layout.handle_resize(event)
                 self.__size = self.get_layout().get_widget_size(self)
+                # self.dirty = True
                 return True
         return False
 
@@ -79,6 +96,8 @@ class Widget(ABC):
 
     def draw(self):
         """Mutate self.view to draw the widget"""
+        if not self.dirty:
+            return
         if self._layout is not None:
             self.view.lines = self._layout.draw()
         else:

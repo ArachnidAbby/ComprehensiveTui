@@ -4,3 +4,7 @@ This package is meant for people who hate using curses and curses-like libraries
 
 This means no playing around with how individual lines draw or making sure everything sizes perfectly.
 This library will attempt to handle it for you. Where it can't- functionality can be easily added by you for your particular needs.
+
+# Demo
+
+![Window Resizing and components respond instantly](docs/static/resizing_demo.gif)

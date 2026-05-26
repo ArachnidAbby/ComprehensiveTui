@@ -15,10 +15,12 @@ PG_UP = 73
 PG_DOWN = 81
 ENTER = 13
 
+ARROW_COMBINATION_SIZE = 2
 
-def arrow_pressed(key: int) -> bool:
+
+def arrow_pressed(keys: list[int]) -> bool:
     """detects if an arrow-key was pressed. Arrow keys are combinations of 2 key presses. The first being keycode 224"""
-    return key == 224
+    return len(keys) >= 2 and keys[0] == 224
 
 
 def setup_terminal():
@@ -60,6 +62,7 @@ __all__ = [
     "PG_UP",
     "PG_DOWN",
     "ENTER",
+    "ARROW_COMBINATION_SIZE",
     # functions
     "arrow_pressed",
     "setup_terminal",

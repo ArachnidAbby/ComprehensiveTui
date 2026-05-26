@@ -2,7 +2,6 @@ from enum import IntEnum, auto
 
 from comprehensivetui.events.event import Event, ResizeEvent
 from comprehensivetui.layouts.align import Align
-from comprehensivetui.utils.definitions import CYAN
 from comprehensivetui.utils.strutils import break_and_wrap_text, visible_len
 from comprehensivetui.widgets.widget import Widget
 
@@ -62,4 +61,4 @@ class Editor(Widget):
             self.view[c] = self.prepare_line(line)
 
 
-__all__ = ["TextBoard"]
+__all__ = ["Editor"]
