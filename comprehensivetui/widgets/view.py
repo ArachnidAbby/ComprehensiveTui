@@ -33,12 +33,12 @@ class DrawableView:
 
         return self.lines[key]
 
-    def reset(self):
-        """Resets the value of self.lines"""
+    def clear(self):
+        """clears each line in self.lines"""
         for i in range(len(self.lines)):
             self.lines[i] = ""
 
-    def reset_full(self):
+    def reset(self):
         """Reset the view fully by emptying self.lines fully- equivelent to instantiating a new view"""
         self.lines = []
 

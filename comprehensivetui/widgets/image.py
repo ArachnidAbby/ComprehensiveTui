@@ -4,6 +4,7 @@ from typing import Protocol, SupportsIndex, overload
 from comprehensivetui.events.event import Event
 from comprehensivetui.layouts.constraints import Constraints
 from comprehensivetui.utils.definitions import rgb_to_ansi
+from comprehensivetui.widgets.view import DrawableView
 from comprehensivetui.widgets.widget import Dirty, Widget
 
 type Color = tuple[int, int, int]
@@ -47,10 +48,12 @@ class Palates:
 
 
 class Image(Widget):
-    __slots__ = "image", "palate"
+    __slots__ = "_image", "_palate", "image_view"
 
-    image: Dirty[ArrayLikeImage]
-    palate: Dirty[str]
+    _image: Dirty[ArrayLikeImage]
+    _palate: Dirty[str]
+    image_view: DrawableView
+    """A surface the image is drawn to- avoids redraws when they are unnecessary"""
 
     def __init__(
         self,
@@ -62,16 +65,31 @@ class Image(Widget):
         constraints: Constraints = Constraints(),
     ):
         super().__init__(name=name, constraints=constraints)
+        self.image_view = DrawableView()
+
+        self._palate = palate
         self.image = image
-        self.palate = palate
 
-    def handle_event(self, event: Event) -> bool:
-        """Handles a given event- returns whether or not the event was handled here"""
-        return super().handle_event(event)
+    @property
+    def image(self) -> ArrayLikeImage:
+        return self._image
 
-    def draw_buffer(self):
-        """Mutate self.view to draw the widget. Modified in sub-classes"""
+    @image.setter
+    def image(self, value: ArrayLikeImage):
+        self._image = value
+        self.draw_image_to_internal_surface()
 
+    @property
+    def palate(self) -> str:
+        return self._palate
+
+    @palate.setter
+    def palate(self, value: str):
+        self._palate = value
+        self.draw_image_to_internal_surface()
+
+    def draw_image_to_internal_surface(self):
+        self.image_view.clear()
         for row in range(len(self.image)):
             row_data = self.image[row]
             for col in range(len(row_data)):
@@ -80,6 +98,15 @@ class Image(Widget):
                 brightness = (len(self.palate) // 2) - (
                     raw_brightness // (len(self.palate) // 2)
                 )
-                self.view[
+                self.image_view[
                     row
                 ] += f"{rgb_to_ansi(*pixel)}{self.palate[brightness: brightness+2]}"
+
+    def handle_event(self, event: Event) -> bool:
+        """Handles a given event- returns whether or not the event was handled here"""
+        return super().handle_event(event)
+
+    def draw_buffer(self):
+        """Mutate self.view to draw the widget. Modified in sub-classes"""
+        for c, line in enumerate(self.image_view.lines):
+            self.view[c] = line

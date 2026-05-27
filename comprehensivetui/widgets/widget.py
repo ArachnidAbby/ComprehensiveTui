@@ -200,7 +200,7 @@ class Widget(ABC, metaclass=WidgetMeta):
         """Mutate self.view to draw the widget"""
         if not self.dirty:
             return
-        self.view.reset()
+        self.view.clear()
         if self._layout is not None:
             self.view.lines = self._layout.draw()
         self.draw_buffer()

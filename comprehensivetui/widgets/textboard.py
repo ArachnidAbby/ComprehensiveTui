@@ -61,7 +61,7 @@ class TextBoard(Widget):
             len(self.draw_lines),
         )
         end = start + self.height
-        self.view.reset()
+        self.view.clear()
         for c, line in enumerate(self.draw_lines[start:end]):
             self.view[c] = self.prepare_line(line)
 
