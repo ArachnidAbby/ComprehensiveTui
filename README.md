@@ -86,6 +86,30 @@ print(widget.view.to_flat(term_size.lines, term_size.columns))
 
 ```
 
+# Included Widgets (so far)
+
+- [x] Frame - frame holding multiple items + a layout
+- [x] Border - A border you can put around any other widget.
+- [x] Label - label holding some text (with line wrapping)
+- [x] TextBoard - A chatroom-like scrolling text widget. Scroll is changable (-inf to 0 range)
+- [x] Program - A widget with the ability to dispatch key events and overall manage TUI state.
+- [x] Image - An image widget that takes any image object with a array-like interface + a palate. converts that image to colored ascii.
+- [ ] Editor - A text input widget with line-wrapping and modern cursor controls (same you would find in ANY application)
+- [ ] BorderGrid - Operates like a mix between a `Frame` and a `Border`. Allows for prettier/grid-like border drawing.
+
+# Included Layouts (so far)
+
+- [x] HorizontalLayout - lays elements out horizontally (evenly spacing if able- otherwise taking into account widget constraints)
+- [x] VerticalLayout - vertical variant of the horizontal layout
+- [ ] GridLayout
+
+# Constraints
+
+Each widget has a set of constraints. They have a minimum and maximum of both their width and height.
+By default these constraint values are all set to `None` (meaning no constraint).
+
+---
+
 # What is `Dirty[T]`?????
 
 The definition of `Dirty[T]` is this:
