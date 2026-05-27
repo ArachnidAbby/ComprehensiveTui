@@ -53,6 +53,14 @@ def clear_line(n: Literal[0] | Literal[1] | Literal[2] = 2, /) -> "AnsiCode":
     return f"\u001b[{n}K"
 
 
+def save_cursor() -> "AnsiCode":
+    return "\u001b[7"
+
+
+def restore_cursor() -> "AnsiCode":
+    return "\u001b[8"
+
+
 def disable_cursor() -> "AnsiCode":
     return "\u001b[?25l"
 

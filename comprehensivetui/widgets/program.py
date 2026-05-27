@@ -17,6 +17,8 @@ from comprehensivetui.utils.definitions.controlcodes import (
     enable_cursor,
     enter_alternative_mode,
     enter_normal_mode,
+    restore_cursor,
+    save_cursor,
     set_cursor,
 )
 from comprehensivetui.utils.definitions.windows import setup_terminal
@@ -97,7 +99,12 @@ class Program(Widget):
                 self.on_frame()
                 time.sleep(1 / self.rate)
         except KeyboardInterrupt:
-            sys.stdout.write(clear_screen())
+            pass
         finally:
-            sys.stdout.write(enable_cursor() + enter_normal_mode())
+            sys.stdout.write(
+                enable_cursor()
+                + enter_normal_mode()
+                + clear_screen()
+                + restore_cursor()
+            )
             sys.stdout.flush()
