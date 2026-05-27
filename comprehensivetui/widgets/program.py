@@ -4,6 +4,7 @@ import time
 from typing import Self
 
 from comprehensivetui.events.event import Event, KeySentEvent, ResizeEvent
+from comprehensivetui.layouts.constraints import Constraints
 from comprehensivetui.utils.definitions import (
     has_char,
     next_char,
@@ -18,6 +19,7 @@ from comprehensivetui.utils.definitions.controlcodes import (
     enter_normal_mode,
     set_cursor,
 )
+from comprehensivetui.utils.definitions.windows import setup_terminal
 from comprehensivetui.widgets.widget import Widget
 
 
@@ -29,8 +31,15 @@ class Program(Widget):
     """framerate"""
     title: str
 
-    def __init__(self, title: str, rate: int, *, name=""):
-        super().__init__(name=name)
+    def __init__(
+        self,
+        title: str,
+        rate: int,
+        *,
+        name="",
+        constraints: Constraints = Constraints(),
+    ):
+        super().__init__(name=name, constraints=constraints)
         self.running = False
         self.rate = rate  # framerate
         self.title = title
@@ -52,6 +61,7 @@ class Program(Widget):
         term_size = os.get_terminal_size()
         events: list[Event] = [ResizeEvent(term_size.columns, term_size.lines)]
         try:
+            setup_terminal()
             sys.stdout.write(set_cursor(0, 0))
             sys.stdout.write(disable_cursor() + enter_alternative_mode())
             sys.stdout.write(f"\u001b]0;{self.title}\007")

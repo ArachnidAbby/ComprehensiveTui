@@ -1,4 +1,5 @@
 from comprehensivetui.events.event import Event
+from comprehensivetui.layouts.constraints import Constraints
 from comprehensivetui.layouts.layout import Layout
 from comprehensivetui.widgets.widget import Widget
 
@@ -6,8 +7,15 @@ from comprehensivetui.widgets.widget import Widget
 class Frame(Widget):
     __slots__ = ()
 
-    def __init__(self, children: list[Widget], layout: Layout, *, name=""):
-        super().__init__(name=name)
+    def __init__(
+        self,
+        children: list[Widget],
+        layout: Layout,
+        *,
+        name="",
+        constraints: Constraints = Constraints(),
+    ):
+        super().__init__(name=name, constraints=constraints)
         self.set_children(children)
         self.set_layout(layout)
 

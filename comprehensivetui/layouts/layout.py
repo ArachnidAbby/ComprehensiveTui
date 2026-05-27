@@ -3,6 +3,7 @@ from typing import NamedTuple
 import typing
 
 from comprehensivetui.events.event import ResizeEvent
+from comprehensivetui.layouts.constraints import Constraints, clamp_value
 
 if typing.TYPE_CHECKING:
     from ..widgets.widget import Widget
@@ -36,14 +37,20 @@ class Layout(ABC):
 
     @abstractmethod
     def handle_resize(self, event: ResizeEvent):
-        self.width = event.width
-        self.height = event.height
+        self.width = clamp_value(
+            self.parent.min_width, self.parent.max_width, event.width
+        )
+        print(event.height)
+        self.height = clamp_value(
+            self.parent.min_height, self.parent.max_height, event.height
+        )
+        print(self.height, self.parent.min_height, self.parent.max_height)
         for child in self.parent.children:
             child_size = self.calculate_widget_size(child)
             child.handle_event(ResizeEvent(child_size.width, child_size.height))
 
     @abstractmethod
-    def calculate_widget_size(self, child: "Widget"):
+    def calculate_widget_size(self, child: "Widget") -> LayoutSize:
         if child is self.parent:
             return LayoutSize(self.width, self.height)
         return LayoutSize(-1, -1)

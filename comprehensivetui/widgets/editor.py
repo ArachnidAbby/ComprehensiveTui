@@ -1,7 +1,7 @@
 from enum import IntEnum, auto
 
 from comprehensivetui.events.event import Event, ResizeEvent
-from comprehensivetui.layouts.align import Align
+from comprehensivetui.layouts.constraints import Align, Constraints
 from comprehensivetui.utils.strutils import break_and_wrap_text, visible_len
 from comprehensivetui.widgets.widget import Widget
 
@@ -18,8 +18,15 @@ class Editor(Widget):
     scroll: int
     """scroll offset going from -inf to 0"""
 
-    def __init__(self, align=Align.left, /, *, name=""):
-        super().__init__(name=name)
+    def __init__(
+        self,
+        align=Align.left,
+        /,
+        *,
+        name="",
+        constraints: Constraints = Constraints(),
+    ):
+        super().__init__(name=name, constraints=constraints)
         self.lines = []
         self.draw_lines = []
         self.align = align

@@ -3,6 +3,7 @@
 from abc import ABC, ABCMeta, abstractmethod
 from types import GenericAlias
 
+from comprehensivetui.layouts.constraints import Constraints
 from comprehensivetui.layouts.layout import Layout, LayoutSize
 from comprehensivetui.widgets.view import DrawableView
 from ..events.event import Event, ResizeEvent
@@ -66,6 +67,7 @@ class Widget(ABC, metaclass=WidgetMeta):
         "visible",
         "_name",
         "_dirty",
+        "_constraints",
     )
 
     children: Dirty[list["Widget"]]
@@ -74,19 +76,61 @@ class Widget(ABC, metaclass=WidgetMeta):
     """The layout of the widget- controls resizing"""
     parent: "Widget | None"
     _size: Dirty[LayoutSize]
+    _constraints: Dirty[Constraints]
+    """Size constraints"""
     _name: str
     view: DrawableView
     """The drawn frame for this widget"""
     _dirty: bool
     """Whether or not the widget needs to be redrawn."""
 
-    def __init__(self, *, name=""):
+    def __init__(self, *, name="", constraints: Constraints = Constraints()):
         self.children = []
         self._size = LayoutSize(-1, -1)
         self.parent = None
         self._layout = None
         self.view = DrawableView()
         self._name = name
+        self._constraints = constraints
+
+    def set_constraints(self, constraints: Constraints):
+        self._constraints = constraints
+
+    @property
+    def min_width(self) -> int | None:
+        if self._constraints.min_width is None and len(self.children) > 0:
+            return sum(
+                child.min_width
+                for child in self.children
+                if child.min_width is not None
+            )
+        return self._constraints.min_width
+
+    @property
+    def min_height(self) -> int | None:
+        if self._constraints.min_height is None and len(self.children) > 0:
+            return sum(
+                child.min_height
+                for child in self.children
+                if child.min_height is not None
+            )
+        return self._constraints.min_height
+
+    @property
+    def max_width(self) -> int | None:
+        return self._constraints.max_width
+
+    @property
+    def max_height(self) -> int | None:
+        return self._constraints.max_height
+
+    @property
+    def width(self) -> int:
+        return self._size.width
+
+    @property
+    def height(self) -> int:
+        return self._size.height
 
     @property
     def dirty(self):
@@ -99,12 +143,14 @@ class Widget(ABC, metaclass=WidgetMeta):
     def add_child(self, child: "Widget"):
         child.parent = self
         self.children.append(child)
+        self._dirty = True
 
     def remove_child(self, child: "Widget"):
         if child.parent is not self:
             return
         child.parent = None
         self.children.remove(child)
+        self._dirty = True
 
     def set_layout(self, layout: Layout):
         if self._layout is not None:
@@ -119,14 +165,6 @@ class Widget(ABC, metaclass=WidgetMeta):
             return self.parent.get_layout()
         else:
             raise Exception("Parent not found for widget")
-
-    @property
-    def width(self) -> int:
-        return self._size.width
-
-    @property
-    def height(self) -> int:
-        return self._size.height
 
     @abstractmethod
     def handle_event(self, event: Event) -> bool:

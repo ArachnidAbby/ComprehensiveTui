@@ -1,4 +1,4 @@
-from typing import overload, override
+from typing import overload
 
 from comprehensivetui.utils.definitions import RESET
 from comprehensivetui.utils.strutils import normalize_line

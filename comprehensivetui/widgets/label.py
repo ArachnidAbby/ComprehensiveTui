@@ -1,7 +1,7 @@
 from enum import IntEnum, auto
 
 from comprehensivetui.events.event import Event, ResizeEvent
-from comprehensivetui.layouts.align import Align
+from comprehensivetui.layouts.constraints import Align, Constraints
 from comprehensivetui.utils.definitions import CYAN
 from comprehensivetui.utils.strutils import break_and_wrap_text, visible_len
 from comprehensivetui.widgets.widget import Dirty, Widget
@@ -14,8 +14,16 @@ class Label(Widget):
     align: Dirty[Align]
     """Visible length of the text- auto calculated as to be cached"""
 
-    def __init__(self, text, align=Align.left, /, *, name=""):
-        super().__init__(name=name)
+    def __init__(
+        self,
+        text,
+        align=Align.left,
+        /,
+        *,
+        name="",
+        constraints: Constraints = Constraints(),
+    ):
+        super().__init__(name=name, constraints=constraints)
         self.text = text
         self.align = align
 
