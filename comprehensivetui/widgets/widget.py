@@ -177,6 +177,10 @@ class Widget(ABC, metaclass=WidgetMeta):
                 return True
         return False
 
+    def get_default_child_size(self) -> LayoutSize:
+        """The default size of an indirect child-element if a direct child has no layout (but has children)"""
+        return self._size
+
     @abstractmethod
     def draw_buffer(self):
         """Mutate self.view to draw the widget. Modified in sub-classes"""
@@ -188,8 +192,7 @@ class Widget(ABC, metaclass=WidgetMeta):
         self.view.reset()
         if self._layout is not None:
             self.view.lines = self._layout.draw()
-        else:
-            self.draw_buffer()
+        self.draw_buffer()
         self._dirty = False
 
     def __repr__(self) -> str:

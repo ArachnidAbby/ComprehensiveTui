@@ -19,6 +19,8 @@ class HorizontalLayout(Layout):
     def calculate_widget_size(self, child: "Widget") -> LayoutSize:
         if child is self.parent:
             return LayoutSize(self.width, self.height)
+        if child not in self.parent.children:
+            return (child.parent or child).get_default_child_size()
 
         child_idx = self.parent.children.index(child)
         if child_idx == 0:

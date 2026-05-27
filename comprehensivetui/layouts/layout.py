@@ -40,11 +40,9 @@ class Layout(ABC):
         self.width = clamp_value(
             self.parent.min_width, self.parent.max_width, event.width
         )
-        print(event.height)
         self.height = clamp_value(
             self.parent.min_height, self.parent.max_height, event.height
         )
-        print(self.height, self.parent.min_height, self.parent.max_height)
         for child in self.parent.children:
             child_size = self.calculate_widget_size(child)
             child.handle_event(ResizeEvent(child_size.width, child_size.height))

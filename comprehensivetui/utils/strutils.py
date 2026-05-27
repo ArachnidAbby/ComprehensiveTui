@@ -4,8 +4,14 @@
 def is_ansi_code(text: str, *, offset=0) -> int:
     """Returns 0 if this text does not start with an ANSI code
     otherwise- returns the length of the ansi code."""
-    if len(text) - offset < 3 or text[offset : offset + 2] != "\u001b[":
+    if len(text) - offset < 3 or text[offset : offset + 2] not in (
+        "\u001b[",
+        "\u001b(",
+        "\u001b]",
+    ):
         return 0
+    if text.startswith("\u001b(", offset):
+        return 3
     for i in range(2 + offset, len(text)):
         if (
             (text[i - 1] == ";" and text[i].isalpha())
@@ -19,7 +25,7 @@ def is_ansi_code(text: str, *, offset=0) -> int:
 
 def remove_ansi_codes(text: str) -> str:
     """Removes ansi codes from text if any are available to be removed."""
-    while (i := text.find("\u001b[")) != -1:
+    while (i := text.find("\u001b")) != -1:
         if code := is_ansi_code(text, offset=i):
             text = text[0:i] + text[i + code :]
     return text
@@ -29,7 +35,7 @@ def visible_len(text: str) -> int:
     """Get the length of the text- minus the size of invisible ANSI codes"""
     offset = 0
     i = 0
-    while (i := text.find("\u001b[", i)) != -1:
+    while (i := text.find("\u001b", i)) != -1:
         if code := is_ansi_code(text, offset=i):
             offset += code
             i += code

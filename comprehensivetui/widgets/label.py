@@ -43,7 +43,7 @@ class Label(Widget):
                     self.view[c] = " " * size + line + " " * size
                 case Align.right:
                     size = self.width - visible_len(line)
-                    self.view[c] = self.text + " " * size
+                    self.view[c] = " " * size + self.text
 
 
 __all__ = ["Label"]
