@@ -80,7 +80,7 @@ widget = Frame(
 term_size = os.get_terminal_size()
 resize_event = ResizeEvent(term_size.columns, term_size.lines)
 
-frame.handle_event(resize_event) # tell our frame to resize
+frame.dispatch_event(resize_event) # tell our frame to resize
 
 print(widget.view.to_flat(term_size.lines, term_size.columns))
 

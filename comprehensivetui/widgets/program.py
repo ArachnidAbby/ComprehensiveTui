@@ -48,9 +48,7 @@ class Program(Widget):
 
     def handle_event(self, event: Event) -> bool:
         """Handles a given event- returns whether or not the event was handled here"""
-        return super().handle_event(event) or any(
-            child.handle_event(event) for child in self.children
-        )
+        return super().handle_event(event)
 
     def draw_buffer(self):
         """Mutate self.view to draw the widget. Modified in sub-classes"""
@@ -90,7 +88,7 @@ class Program(Widget):
                     events.append(ResizeEvent(term_size.columns, term_size.lines))
 
                 for event in events:
-                    self.handle_event(event)
+                    self.dispatch_event(event)
 
                 self.draw()
                 sys.stdout.write(set_cursor(0, 0))

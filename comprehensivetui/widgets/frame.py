@@ -21,9 +21,7 @@ class Frame(Widget):
 
     def handle_event(self, event: Event) -> bool:
         """Handles a given event- returns whether or not the event was handled here"""
-        return super().handle_event(event) or any(
-            [child.handle_event(event) for child in self.children]
-        )  # uses list form so all children handle the event
+        return super().handle_event(event)
 
     def draw_buffer(self):
         """Mutate self.view to draw the widget. Modified in sub-classes"""

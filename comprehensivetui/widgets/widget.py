@@ -177,6 +177,17 @@ class Widget(ABC, metaclass=WidgetMeta):
                 return True
         return False
 
+    def dispatch_event(self, event: Event) -> bool:
+        """Give an event to this widget to handle and propagate to its children"""
+        own_output = self.handle_event(event)
+        return self.propagate_event(event) or own_output
+
+    def propagate_event(self, event) -> bool:
+        out = False
+        for child in self.children:
+            out = out | child.propagate_event(event)
+        return out
+
     def get_default_child_size(self) -> LayoutSize:
         """The default size of an indirect child-element if a direct child has no layout (but has children)"""
         return self._size
