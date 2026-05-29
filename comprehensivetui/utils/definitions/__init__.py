@@ -47,6 +47,7 @@ RESET: "AnsiCode" = "\u001b[0m"
 BOLD: "AnsiCode" = "\u001b[1m"
 UNDERLINE: "AnsiCode" = "\u001b[4m"
 REVERSE: "AnsiCode" = "\u001b[7m"
+UNDO_REVERSE: "AnsiCode" = "\u001b[27m"
 ENTER_LINE_DRAWING_MODE = "\u001b(0"
 EXIT_LINE_DRAWING_MODE = "\u001b(B"
 

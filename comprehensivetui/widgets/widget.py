@@ -185,7 +185,7 @@ class Widget(ABC, metaclass=WidgetMeta):
     def propagate_event(self, event) -> bool:
         out = False
         for child in self.children:
-            out = out | child.propagate_event(event)
+            out = out | child.dispatch_event(event)
         return out
 
     def get_default_child_size(self) -> LayoutSize:

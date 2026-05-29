@@ -87,7 +87,7 @@ class Program(Widget):
                 if term_size.columns != self.width or term_size.lines != self.height:
                     events.append(ResizeEvent(term_size.columns, term_size.lines))
 
-                for event in events:
+                while len(events) > 0 and (event := events.pop(0)):
                     self.dispatch_event(event)
 
                 self.draw()

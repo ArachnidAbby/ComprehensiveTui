@@ -60,7 +60,7 @@ class KeySentEvent(Event):
     """A key press has been sent"""
 
     __slots__ = "chars"
-    __match_args__ = "codes"
+    __match_args__ = ("codes",)
 
     chars: bytes
     """The bytes sent in this key event.

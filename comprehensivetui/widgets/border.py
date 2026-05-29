@@ -66,7 +66,7 @@ class Border(Widget):
                 for child in self.children:
                     child.handle_event(modified_event)
                 return True
-        return any(child.handle_event(event) for child in self.children)
+        return False
 
     def draw_buffer(self):
         """Mutate self.view to draw the widget. Modified in sub-classes"""
@@ -110,6 +110,6 @@ class Border(Widget):
 
     def draw(self):
         """Mutate self.view to draw the widget."""
-        if not self.dirty:
-            return
+        # if not self.dirty:
+        #     return
         super().draw()

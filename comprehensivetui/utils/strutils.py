@@ -59,7 +59,7 @@ def get_visible_index(text: str, idx: int) -> int:
             continue
         i += 1
         if i + offset > len(text):
-            return idx
+            return idx + offset
     return i + offset - 1
 
 
