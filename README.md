@@ -94,7 +94,7 @@ print(widget.view.to_flat(term_size.lines, term_size.columns))
 - [x] TextBoard - A chatroom-like scrolling text widget. Scroll is changable (-inf to 0 range)
 - [x] Program - A widget with the ability to dispatch key events and overall manage TUI state.
 - [x] Image - An image widget that takes any image object with a array-like interface + a palate. converts that image to colored ascii.
-- [ ] Editor - A text input widget with line-wrapping and modern cursor controls (same you would find in ANY application)
+- [x] Editor - A text input widget with line-wrapping and modern cursor controls (same you would find in ANY application)
 - [ ] BorderGrid - Operates like a mix between a `Frame` and a `Border`. Allows for prettier/grid-like border drawing.
 
 # Included Layouts (so far)
