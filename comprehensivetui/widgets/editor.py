@@ -266,7 +266,7 @@ class Editor(Widget):
                 translated_cursor = self.cursor_col - sub_c * self.wrap_len
                 if (
                     line_c == self.cursor_row
-                    and visible_len(sub_line) >= translated_cursor >= 0
+                    and self.wrap_len >= translated_cursor >= 0
                 ):
                     self.view[current_line] = self.prepare_line(
                         self.add_cursor_to_line(sub_line, translated_cursor),
