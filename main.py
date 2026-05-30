@@ -8,6 +8,7 @@ from comprehensivetui.layouts.horizontal import HorizontalLayout
 from comprehensivetui.utils.definitions import CYAN, RESET
 from comprehensivetui.utils.definitions import (
     BACKSPACE,
+    ENTER,
     LEFT_ARROW,
     RIGHT_ARROW,
     UP_ARROW,
@@ -29,6 +30,19 @@ class CustomEditor(Editor):
         super().__init__(*args, **kwargs)
         self.debug = debug
 
+    @property
+    def wrap_len(self) -> int:
+        return super().wrap_len - 3
+
+    def prepare_line(self, line: str, current_line: int, line_i: int, sub_line_i: int):
+        """Prepares the line by doing edits to it. Can be modified to add line effects
+        args:
+        - line: the sub_line of text we are modifying
+        - current_line: the current drawing-line we are on
+        - line_i: the current line of text we are on
+        - sub_line_i: the sub-line (accounting for line-wrapping) line we are on."""
+        return f"{current_line}) " + self.pad_line(line)
+
     def handle_event(self, event: Event) -> bool:
         if super().handle_event(event):
             return True
@@ -36,8 +50,12 @@ class CustomEditor(Editor):
         match event:
             case KeySentEvent(codes):
                 if len(codes) == 1:
-                    if codes[0] != BACKSPACE:
+                    if codes[0] not in (BACKSPACE, ENTER):
                         self.push_char(chr(codes[0]))
+                    elif (
+                        codes[0] == ENTER
+                    ):  # enter might be \r (like in windows. so we need to manually do this)
+                        self.push_char("\n")
                     else:
                         self.backspace()
                 elif arrow_pressed(codes):
@@ -53,6 +71,7 @@ class CustomEditor(Editor):
                     chr(codes[0])
                     + f" {self.cursor_row} {self.cursor_col} {self.scroll}"
                 )
+                self.debug._dirty = True
                 return True
         return False
 

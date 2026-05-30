@@ -2,7 +2,7 @@ from enum import IntEnum, auto
 
 from comprehensivetui.events.event import Event, ResizeEvent
 from comprehensivetui.layouts.constraints import Align, Constraints
-from comprehensivetui.utils.definitions import RESET, REVERSE
+from comprehensivetui.utils.definitions import RESET, REVERSE, UNDO_REVERSE
 from comprehensivetui.utils.strutils import (
     break_and_wrap_text,
     get_visible_index,
@@ -82,13 +82,16 @@ class Editor(Widget):
     def cursor_right(self):
         """moves the cursor right by one"""
 
-        if self.cursor_col == visible_len(
-            self.lines[self.cursor_row]
-        ) - 1 and self.cursor_row != len(self.lines):
+        if (
+            self.cursor_col == visible_len(self.lines[self.cursor_row])
+            and self.cursor_row != len(self.lines) - 1
+        ):
             self.cursor_down()
             self.cursor_col = 0
-        else:
-            self.cursor_col = min(self.cursor_col + 1, len(self.text))
+        elif self.cursor_col != visible_len(self.lines[self.cursor_row]):
+            self.cursor_col = min(
+                self.cursor_col + 1, visible_len(self.lines[self.cursor_row]) + 1
+            )
 
     def cursor_up(self):
         """Moves the cursor up by one"""
@@ -140,10 +143,16 @@ class Editor(Widget):
                 1  # visually move our scroll based on how many sub_lines down we are
             )
 
+        self.cursor_row = max(min(self.cursor_col, len(self.lines) - 1), 0)
+
     def push_char(self, char: str):
         """Puts a char at the current cursor position"""
-        lines = [line + "\n" for line in self.lines]
-        if self.cursor_col > visible_len(lines[self.cursor_row]):
+        lines = [
+            line + "\n" if c != len(self.lines) - 1 else line
+            for c, line in enumerate(self.lines)
+        ]
+
+        if self.cursor_col > visible_len(lines[self.cursor_row]) - 1:
             lines[self.cursor_row] += char
         # case: cursor is in the middle of a line
         else:
@@ -175,12 +184,15 @@ class Editor(Widget):
 
     def backspace(self):
         """Does the logic to move the cursor and remove a character at the current cursor position"""
-        lines = [line + "\n" for line in self.lines]
+        lines = [
+            line + "\n" if c != len(self.lines) - 1 else line
+            for c, line in enumerate(self.lines)
+        ]
 
         if self.cursor_row == 0 and self.cursor_col == 0:
             return
         # case: at end of line. Just remove last character
-        if self.cursor_col > visible_len(lines[self.cursor_row]):
+        if self.cursor_col > visible_len(lines[self.cursor_row]) - 1:
             lines[self.cursor_row] = lines[self.cursor_row][
                 0 : get_visible_index(
                     lines[self.cursor_row], len(lines[self.cursor_row]) - 1
@@ -191,32 +203,38 @@ class Editor(Widget):
             lines[self.cursor_row] = (
                 # all text before our cursor
                 lines[self.cursor_row][
-                    0 : get_visible_index(lines[self.cursor_row], self.cursor_col - 1)
+                    0 : min(
+                        get_visible_index(lines[self.cursor_row], self.cursor_col - 1),
+                        len(lines[self.cursor_row]) - 1,
+                    )
                 ]
                 # rest of the text
                 + lines[self.cursor_row][
-                    get_visible_index(lines[self.cursor_row], self.cursor_col) :
+                    min(
+                        get_visible_index(lines[self.cursor_row], self.cursor_col),
+                        len(lines[self.cursor_row]) - 1,
+                    ) :
                 ]
             )
         self.text = "".join(lines)
         self.cursor_left()  # move cursor left by one
 
     def add_cursor_to_line(self, line: str, col: int) -> str:
-        real_col = get_visible_index(line, min(col, visible_len(line)))
-        if real_col < len(line):
+        real_col = get_visible_index(line, col)
+        if real_col < visible_len(line) - 1:
             return (
                 line[:real_col]
                 + REVERSE
                 + line[real_col]
-                + RESET
+                + UNDO_REVERSE
                 + (
-                    " "
-                    if col == visible_len(line) - 1
+                    ""
+                    if real_col == visible_len(line) - 1
                     else line[get_visible_index(line, col + 1) :]
                 )
             )
         else:
-            return line[:] + REVERSE + " " + RESET
+            return line + REVERSE + " " + UNDO_REVERSE
 
     def prepare_line(self, line: str, current_line: int, line_i: int, sub_line_i: int):
         """Prepares the line by doing edits to it. Can be modified to add line effects
@@ -231,29 +249,37 @@ class Editor(Widget):
         """Mutate self.view to draw the widget. Modified in sub-classes"""
 
         current_line = -1
+        passed_lines = 0
 
         for line_c, line in enumerate(self.lines):
-            if current_line >= self.height:
+            if current_line > self.height:
                 break
             for sub_c, sub_line in enumerate(break_and_wrap_text(line, self.wrap_len)):
-                if current_line >= self.height:
-                    break
-                if current_line < self.scroll:
+                if passed_lines < self.scroll:
+                    passed_lines += 1
                     continue
+                if current_line > self.height:
+                    break
                 current_line += 1
-                if line_c == self.cursor_row:
-                    translated_cursor = self.cursor_col - sub_c * self.wrap_len
-                    if visible_len(sub_line) > translated_cursor >= 0:
-                        self.view[current_line] = self.prepare_line(
-                            self.add_cursor_to_line(line, translated_cursor),
-                            current_line,
-                            line_c,
-                            sub_c,
-                        )
+
+                translated_cursor = self.cursor_col - sub_c * self.wrap_len
+                if (
+                    line_c == self.cursor_row
+                    and visible_len(sub_line) >= translated_cursor >= 0
+                ):
+                    self.view[current_line] = self.prepare_line(
+                        self.add_cursor_to_line(line, translated_cursor),
+                        current_line + passed_lines,
+                        line_c,
+                        sub_c,
+                    )
                 else:
                     self.view[current_line] = self.prepare_line(
-                        line, current_line, line_c, sub_c
+                        line, current_line + passed_lines, line_c, sub_c
                     )
+
+        for i in range(current_line + 1, self.height):
+            self.view[i] = self.prepare_line("", i + passed_lines, -1, -1)
 
 
 __all__ = ["Editor"]
