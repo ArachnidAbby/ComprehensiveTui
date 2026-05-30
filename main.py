@@ -72,7 +72,8 @@ class CustomEditor(Editor):
                         self.cursor_down()
                 self.debug.text = (
                     chr(codes[0])
-                    + f" {self.cursor_row} {self.cursor_col} {self.scroll}"
+                    if codes[0] != ENTER
+                    else "\\n" + f" {self.cursor_row} {self.cursor_col} {self.scroll}"
                 )
                 self.debug._dirty = True
                 return True
@@ -101,9 +102,9 @@ class ExampleProgram(Program):
                     Frame(
                         [
                             self.label,
-                            # Border(
-                            editor,
-                            # ),
+                            Border(
+                                editor,
+                            ),
                             Image(image_data, Palates.regular),
                             Label(f"{CYAN}bar", Align.right, name="2"),
                             Label(f"{CYAN}baz", Align.center, name="3"),

@@ -63,10 +63,18 @@ class Border(Widget):
                 else:
                     self._size = self.get_layout().get_widget_size(self)
 
-                for child in self.children:
-                    child.handle_event(modified_event)
+                self._dirty = True
                 return True
         return False
+
+    def propagate_event(self, event: Event) -> bool:
+        if isinstance(event, ResizeEvent):
+            modified_event = ResizeEvent(
+                event.width - self.show_left - self.show_right,
+                event.height - self.show_up - self.show_down,
+            )
+            return super().propagate_event(modified_event)
+        return super().propagate_event(event)
 
     def draw_buffer(self):
         """Mutate self.view to draw the widget. Modified in sub-classes"""
