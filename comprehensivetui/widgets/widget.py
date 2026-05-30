@@ -35,13 +35,16 @@ class WidgetMeta(ABCMeta):
     def __new__(cls, clsname, bases, attrs: dict):
         dirty_props = {
             name: annot
-            for name, annot in bases[0].__annotations__.items()
+            for name, annot in attrs.get("__annotations__", {}).items()
             if isinstance(annot, GenericAlias) and annot.__name__ == Dirty.__name__
         }
+
         for prop in dirty_props.keys():
             attrs[prop] = DirtyProperty()
 
         if "__slots__" in attrs.keys():
+            if isinstance(attrs["__slots__"], str):
+                attrs["__slots__"] = (attrs["__slots__"],)
             attrs["__slots__"] = (
                 *(
                     slot
@@ -85,6 +88,7 @@ class Widget(ABC, metaclass=WidgetMeta):
     """Whether or not the widget needs to be redrawn."""
 
     def __init__(self, *, name="", constraints: Constraints = Constraints()):
+        self._dirty = False
         self.children = []
         self._size = LayoutSize(-1, -1)
         self.parent = None

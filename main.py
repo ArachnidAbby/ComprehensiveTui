@@ -75,7 +75,7 @@ class CustomEditor(Editor):
                     if codes[0] != ENTER
                     else "\\n" + f" {self.cursor_row} {self.cursor_col} {self.scroll}"
                 )
-                self.debug._dirty = True
+                # self.debug._dirty = True
                 return True
         return False
 
@@ -118,14 +118,14 @@ class ExampleProgram(Program):
 
         self.set_layout(VerticalLayout())
 
-    # def on_frame(self):
-    #     self.label.text = f"{len(self.ev)}"
-    #     t = time.perf_counter()
-    #     dif = t - self.last_timer
-    #     if dif > self.highest:
-    #         self.label.text = f"perf: {self.highest:f}"
-    #         self.highest = dif
-    #     self.last_timer = t
+    def on_frame(self):
+        t = time.perf_counter()
+        self.label.text = f"{t}"
+        dif = t - self.last_timer
+        if dif > self.highest:
+            self.label.text = f"perf: {self.highest:f}"
+            self.highest = dif
+        self.last_timer = t
 
 
 def main():
