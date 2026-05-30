@@ -126,33 +126,30 @@ class Editor(Widget):
             self.cursor_col += (
                 self.wrap_len
             )  # move our cursor down *visually* by moving our cursor right
-        elif len(sub_lines) > 1:
-            self.cursor_col = len(self.lines[self.cursor_row])
+        elif len(sub_lines) > 1 and self.cursor_row == len(self.lines) - 1:
+            self.cursor_col = visible_len(self.lines[self.cursor_row])
         else:
             self.cursor_row = min(
                 self.cursor_row + 1, len(self.lines) - 1
-            )  # move cursor up
+            )  # move cursor down
             if self.cursor_row > self.scroll:  # move scroll to make our cursor visible
                 self.scroll = self.cursor_row
         if (
-            len(sub_lines) > 1
-            and original_row + self.cursor_col // self.wrap_len
+            original_row + self.cursor_col // self.wrap_len
             >= self.scroll + self.height - 1
         ):
             self.scroll += (
                 1  # visually move our scroll based on how many sub_lines down we are
             )
 
-        self.cursor_row = max(min(self.cursor_col, len(self.lines) - 1), 0)
+        # self.cursor_row = max(min(self.cursor_col, len(self.lines)), 0)
 
     def push_char(self, char: str):
         """Puts a char at the current cursor position"""
-        lines = [
-            line + "\n" if c != len(self.lines) - 1 else line
-            for c, line in enumerate(self.lines)
-        ]
+        lines = [line for c, line in enumerate(self.lines)]
+        original_len = len(self.lines)
 
-        if self.cursor_col > visible_len(lines[self.cursor_row]) - 1:
+        if self.cursor_col >= visible_len(lines[self.cursor_row]) - 1:
             lines[self.cursor_row] += char
         # case: cursor is in the middle of a line
         else:
@@ -168,6 +165,10 @@ class Editor(Widget):
                 ]
             )
         self.text = "\n".join(lines)
+        after_len = len(self.lines)
+        if after_len > original_len:
+            self.cursor_down()
+            self.cursor_col = 0
         self.cursor_right()
 
     def pad_line(self, text: str) -> str:
@@ -268,18 +269,20 @@ class Editor(Widget):
                     and visible_len(sub_line) >= translated_cursor >= 0
                 ):
                     self.view[current_line] = self.prepare_line(
-                        self.add_cursor_to_line(line, translated_cursor),
+                        self.add_cursor_to_line(sub_line, translated_cursor),
                         current_line + passed_lines,
                         line_c,
                         sub_c,
                     )
                 else:
                     self.view[current_line] = self.prepare_line(
-                        line, current_line + passed_lines, line_c, sub_c
+                        sub_line, current_line + passed_lines, line_c, sub_c
                     )
 
         for i in range(current_line + 1, self.height):
-            self.view[i] = self.prepare_line("", i + passed_lines, -1, -1)
+            self.view[i] = self.prepare_line(
+                "", i + passed_lines, len(self.lines) + (i - current_line), 0
+            )
 
 
 __all__ = ["Editor"]

@@ -41,7 +41,10 @@ class CustomEditor(Editor):
         - current_line: the current drawing-line we are on
         - line_i: the current line of text we are on
         - sub_line_i: the sub-line (accounting for line-wrapping) line we are on."""
-        return f"{current_line}) " + self.pad_line(line)
+        if sub_line_i == 0:
+            return f"{line_i}) " + self.pad_line(line)
+        else:
+            return f"{" "*(len(str(line_i))-1)}.) " + self.pad_line(line)
 
     def handle_event(self, event: Event) -> bool:
         if super().handle_event(event):
