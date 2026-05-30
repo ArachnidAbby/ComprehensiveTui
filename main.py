@@ -121,7 +121,7 @@ class ExampleProgram(Program):
 
     def on_frame(self):
         t = time.perf_counter()
-        self.board.lines = self.board.lines + [str(t)]
+        # self.board.lines = self.board.lines + [str(t)]
         # self.label.text = f"{t}"
         dif = t - self.last_timer
         if dif > self.highest:
@@ -133,7 +133,7 @@ class ExampleProgram(Program):
 def main():
     print("Hello from comprehensivetui!")
 
-    program = ExampleProgram(rate=2, title="Example Title")
+    program = ExampleProgram(rate=60, title="Example Title")
     program.start()
 
     # program = Border(

@@ -7,7 +7,7 @@ This library will attempt to handle it for you. Where it can't- functionality ca
 
 # Demo
 
-![Window Resizing and components respond instantly](docs/static/resizing_demo.gif)
+![Window Resizing and components respond instantly](docs/static/widgets_demo.gif)
 
 # Example (blocking render loop)
 
