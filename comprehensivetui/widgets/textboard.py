@@ -7,9 +7,9 @@ from comprehensivetui.widgets.widget import Dirty, Widget
 class TextBoard(Widget):
     """A board full of scrollable messages."""
 
-    __slots__ = "lines", "draw_lines", "scroll", "align"
+    __slots__ = "_lines", "draw_lines", "scroll", "align"
 
-    lines: Dirty[list[str]]
+    _lines: Dirty[list[str]]
     draw_lines: list[str]
     """broken and wrapped lines"""
     align: Dirty[Align]
@@ -25,10 +25,23 @@ class TextBoard(Widget):
         constraints: Constraints = Constraints(),
     ):
         super().__init__(name=name, constraints=constraints)
-        self.lines = []
+        self._lines = []
         self.draw_lines = []
         self.align = align
         self.scroll = 0
+
+    @property
+    def lines(self) -> list[str]:
+        return self._lines
+
+    @lines.setter
+    def lines(self, value: list[str]):
+        self._lines = value
+        self.draw_lines = [
+            line
+            for raw_line in self._lines
+            for line in break_and_wrap_text(raw_line, max(self.width, 1))
+        ]
 
     def handle_event(self, event: Event) -> bool:
         """Handles a given event- returns whether or not the event was handled here"""

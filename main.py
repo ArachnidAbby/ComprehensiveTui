@@ -81,13 +81,13 @@ class CustomEditor(Editor):
 
 
 class ExampleProgram(Program):
-    __slots__ = ("label", "last_timer", "highest")
+    __slots__ = ("label", "last_timer", "highest", "board")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        board = TextBoard(Align.center)
-        board.lines = [str(i) for i in range(35)]
+        self.board = TextBoard(Align.center)
+        self.board.lines = [str(i) for i in range(35)]
         self.label = Label(f"{CYAN}Test1\nTest4", Align.center, name="1")
         self.last_timer = time.perf_counter()
         self.highest = 0
@@ -102,6 +102,7 @@ class ExampleProgram(Program):
                     Frame(
                         [
                             self.label,
+                            self.board,
                             Border(
                                 editor,
                             ),
@@ -120,7 +121,8 @@ class ExampleProgram(Program):
 
     def on_frame(self):
         t = time.perf_counter()
-        self.label.text = f"{t}"
+        self.board.lines = self.board.lines + [str(t)]
+        # self.label.text = f"{t}"
         dif = t - self.last_timer
         if dif > self.highest:
             self.label.text = f"perf: {self.highest:f}"
@@ -131,7 +133,7 @@ class ExampleProgram(Program):
 def main():
     print("Hello from comprehensivetui!")
 
-    program = ExampleProgram(rate=60, title="Example Title")
+    program = ExampleProgram(rate=2, title="Example Title")
     program.start()
 
     # program = Border(
